@@ -16,3 +16,5 @@ world_immigration.clean1 %>%
   mutate(immigrants = as.numeric(as.character(immigrants))) %>%  
   group_by(region) %>%
   summarise(total.count = n(), count = sum(immigrants, na.rm = FALSE ))
+
+#HOW TO: turn summarise output to data frame#
