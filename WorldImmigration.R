@@ -12,9 +12,8 @@ world_immigration.clean.melt$year <- as.numeric(as.character(world_immigration.c
 world_immigration.clean1 <- world_immigration.clean.melt
 
 #sum all 30 years for each country#
-world_immigration.clean1 %>%
+world_immigration_TOTAL <- world_immigration.clean1 %>%
   mutate(immigrants = as.numeric(as.character(immigrants))) %>%  
   group_by(region) %>%
   summarise(total.count = n(), count = sum(immigrants, na.rm = FALSE ))
 
-#HOW TO: turn summarise output to data frame#
