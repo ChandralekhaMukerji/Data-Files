@@ -1,9 +1,14 @@
+#loading packages#
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(scales)
 library(gridExtra)
+
+> install.packages('xlsx')
+library(xlsx)
+
 
 #Number of people who have immigrated to Denmark in last 30 years#
 world_immigration <- read_csv("interactive-journalism-module-master/interactive-journalism-module-master/interactive-journalism-module-master/Data Files/world_immigration.csv", 
@@ -22,7 +27,7 @@ world_immigration.clean1 <- world_immigration.clean.melt
 world_immigration_TOTAL <- world_immigration.clean1 %>%
   mutate(immigrants = as.numeric(as.character(immigrants))) %>%  
   group_by(region) %>%
-  summarise(total.count = n(), count = sum(immigrants, na.rm = FALSE ))
+  summarise(count = sum(immigrants, na.rm = FALSE ))
 
 #world population cleaning, data from world bank#
 world_populationWB <- read_csv("interactive-journalism-module-master/interactive-journalism-module-master/interactive-journalism-module-master/Data Files/world_populationWB.csv")
@@ -30,4 +35,3 @@ names(world_populationWB) <- c("X1", "X2", "Country", "X4", "X5", "X6", "X7","X8
 world_populationWB.clean <- world_populationWB %>% 
   select(-X1, -X2, -X4, -X5, -X6, -X7, -X8, -X9, -X10, -X11, -X12, -X13, -X14, -X16)
 names(world_populationWB.clean) <- c("region","population")
-
