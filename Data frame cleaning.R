@@ -23,19 +23,13 @@ economic_activity.clean <- economic_activity %>%
   select(-X1)
 names(economic_activity.clean) <- c("region", "2008", "2009","2010","2011","2012", "2013", "2014", "2015", "2016", "2017")
 
-#Economic Activity rate mean for Highcharts#
+#Economic Activity rate mean#
 economic_activity.clean.melt <- melt(economic_activity.clean, id="region")
 names(economic_activity.clean.melt) <- c("region", "year", "immigrants")
 economic_activity.clean.melt$year <- as.numeric(as.character(economic_activity.clean.melt$year))
 economic_activity.clean1 <- economic_activity.clean.melt
-names(economic_activity.mean) <- aggregate(economic_activity.clean1[, 3], list(economic_activity.clean1$region), mean)
-
-#             Group.1     x
-1 Region Hovedstaden 81.13
-2 Region Midtjylland 78.20
-3 Region Nordjylland 76.96
-4 Region Sj<e6>lland 78.21
-5 Region Syddanmark 77.33#
+economic_activity.mean.clean1.mean <- aggregate(economic_activity.clean1[, 3], list(economic_activity.clean1$region), mean)
+names(economic_activity.mean.clean1.mean) <- c("region", "Economic Activity Rate")
 
 #Cleaning unemployment benefits#
 Unemployment_benefits <- read_csv("interactive-journalism-module-master/interactive-journalism-module-master/interactive-journalism-module-master/Data Files/Unemployment_benefits.csv", 
@@ -44,22 +38,18 @@ Unemployment_benefits.clean <- Unemployment_benefits %>%
   select(-X1)
 names(Unemployment_benefits.clean) <- c("region", "2008", "2009","2010","2011","2012", "2013", "2014", "2015", "2016", "2017")
 
-#Unemployment benefits mean for last 10 years, Highcharts#
+#Unemployment benefits mean for last 10 years#
 Unemployment_benefits.clean.melt <- melt(Unemployment_benefits.clean, id="region")
 names(Unemployment_benefits.clean.melt) <- c("region", "year", "benefits")
 Unemployment_benefits.clean.melt$year <- as.numeric(as.character(Unemployment_benefits.clean.melt$year))
 Unemployment_benefits.clean1 <- Unemployment_benefits.clean.melt
-names(Unemployment_benefits.mean) <- aggregate(Unemployment_benefits.clean1[, 3], list(Unemployment_benefits.clean1$region), mean)
+Unemployment_benefits.clean1.mean <- aggregate(Unemployment_benefits.clean1[, 3], list(Unemployment_benefits.clean1$region), mean)
+names(Unemployment_benefits.clean1.mean) <- c("region", "Avg.Unemployment Benefits")
 
-#Group.2       x
-1 Region Hovedstaden 24409.4
-2 Region Midtjylland 15767.8
-3 Region Nordjylland  8133.6
-4 Region Sj<e6>lland  8997.1
-5 Region Syddanmark  14645.2 #
+# merge the two datasets#
+Danish_population.merge <- merge(Danish_population.clean, Unemployment_benefits.clean1.mean, by="region")
+Danish_population.merge1 <- merge(Danish_population.merge,economic_activity.mean.clean1.mean, by="region")
 
-# merge the two datasets
-Danish_population.merge <- merge(Danish_population.clean, Unemployment_benefits.mean, by="region")
 
 #Cleaning of employment rate data#
 employment_rate <- read_csv("interactive-journalism-module-master/interactive-journalism-module-master/interactive-journalism-module-master/Data Files/employment_rate.csv", 
@@ -76,3 +66,21 @@ unemployement.clean <- unemployement %>%
   select(-X1)
 names(unemployement.clean) <- c("region", "2008", "2009","2010","2011","2012", "2013", "2014", "2015", "2016", "2017")
 
+#Unemployement mean#
+unemployement.clean.melt <- melt(unemployement.clean, id="region")
+names(unemployement.clean.melt) <- c("region", "year", "immigrants")
+unemployement.clean.melt$year <- as.numeric(as.character(unemployement.clean.melt$year))
+unemployement.clean1 <- unemployement.clean.melt
+unemployement.clean1.mean <- aggregate(unemployement.clean1[, 3], list(unemployement.clean1$region), mean)
+names(unemployement.clean1.mean) <- c("region", "Avg. Unemployment Rate")
+
+# merge the two datasets#
+Danish_population.merge2 <- merge(Danish_population.merge1,unemployement.clean1.mean, by="region")
+
+# calculating percentage of population claiming unemployment benefits#
+Danish_population.FINAL<- Danish_population.merge2 %>%
+  mutate(percentage_claiming_benefits = Avg.UnemploymentBenefits/total*100)
+
+#cleaning table keeping only relevant columns#
+Danish_population.FINAL1 <- Danish_population.FINAL %>% 
+  select(-Danes, -immigrants, -Avg.UnemploymentBenefits)
