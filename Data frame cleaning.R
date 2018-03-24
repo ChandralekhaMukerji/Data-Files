@@ -1,4 +1,4 @@
-# load packages
+# load packages#
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -44,7 +44,7 @@ names(Unemployment_benefits.clean.melt) <- c("region", "year", "benefits")
 Unemployment_benefits.clean.melt$year <- as.numeric(as.character(Unemployment_benefits.clean.melt$year))
 Unemployment_benefits.clean1 <- Unemployment_benefits.clean.melt
 Unemployment_benefits.clean1.mean <- aggregate(Unemployment_benefits.clean1[, 3], list(Unemployment_benefits.clean1$region), mean)
-names(Unemployment_benefits.clean1.mean) <- c("region", "Avg.Unemployment Benefits")
+names(Unemployment_benefits.clean1.mean) <- c("region", "Avg_Benefits")
 
 # merge the two datasets#
 Danish_population.merge <- merge(Danish_population.clean, Unemployment_benefits.clean1.mean, by="region")
@@ -79,11 +79,11 @@ Danish_population.merge2 <- merge(Danish_population.merge1,unemployement.clean1.
 
 # calculating percentage of population claiming unemployment benefits#
 Danish_population.FINAL<- Danish_population.merge2 %>%
-  mutate(percentage_claiming_benefits = Avg.UnemploymentBenefits/total*100)
+  mutate(percentage_claiming_benefits = Avg_Benefits/total*100)
 
 #cleaning table keeping only relevant columns#
 Danish_population.FINAL1 <- Danish_population.FINAL %>% 
-  select(-Danes, -immigrants, -Avg.UnemploymentBenefits)
+  select(-Danes, -immigrants, -Avg_Benefits)
 
 #plotting#
 plot_umemployment_benefits <- Danish_population.FINAL1 %>% 
