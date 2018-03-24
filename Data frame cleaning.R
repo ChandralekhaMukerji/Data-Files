@@ -84,3 +84,12 @@ Danish_population.FINAL<- Danish_population.merge2 %>%
 #cleaning table keeping only relevant columns#
 Danish_population.FINAL1 <- Danish_population.FINAL %>% 
   select(-Danes, -immigrants, -Avg.UnemploymentBenefits)
+
+#plotting#
+plot_umemployment_benefits <- Danish_population.FINAL1 %>% 
+  group_by(region) %>%
+  ggplot(aes(x=ImmigrantPercentage,
+             y=percentage_claiming_benefits,
+             color=region)) 
+  ggtitle("Immigrants in the region (in %) Vs People claiming unemployment benefits (in %)")
+View(plot_umemployment_benefits)
